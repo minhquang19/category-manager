@@ -278,4 +278,31 @@ trait CategoryAdminMethods
 
         return $query;
     }
+    
+    public function getTree(Request $request) {
+        $query = $this->entity;
+        
+        if ($request->has('type')) {
+            $query = $query->where('type', $request->get('type'));
+        }
+
+        $categories = $query->where('parent_id', 0)->where('status', 1)->with('children')->get();
+
+        $categories = $this->mapChildren($categories);
+
+        return response()->json($categories);
+    }
+
+    protected function mapChildren($categories) {
+        return $categories->map(function ($item) {
+            $children = [];
+            if ($item->children) {
+                $children = $this->mapChildren($item->children);
+            }
+            return [
+                'name' => $item->name,
+                'children' => $children
+            ];
+        });
+    }
 }
