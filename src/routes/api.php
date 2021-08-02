@@ -21,7 +21,7 @@ $api->version('v1', function ($api) {
             $api->delete('categories/bulk-delete', 'VCComponent\Laravel\Category\Http\Controllers\Api\Admin\CategoryController@bulkDelete');
             $api->resource('categories', 'VCComponent\Laravel\Category\Http\Controllers\Api\Admin\CategoryController');
 
-            $api->get('category/tree', 'VCComponent\Laravel\Category\Http\Controllers\Api\Admin\getCategoriesTreeController@tree');
+            $api->get('category/tree', 'VCComponent\Laravel\Category\Http\Controllers\Api\Admin\CategoryController@getTree');
         });
         $api->get('categories/all', 'VCComponent\Laravel\Category\Http\Controllers\Api\Frontend\CategoryController@list');
         $api->put('categories/status/bulk', 'VCComponent\Laravel\Category\Http\Controllers\Api\Frontend\CategoryController@bulkUpdateStatus');
