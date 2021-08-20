@@ -300,8 +300,9 @@ trait CategoryAdminMethods
                 $children = $this->mapChildren($item->children);
             }
             return [
-                'name' => $item->name,
-                'children' => $children
+                'id'        => $item->id,
+                'name'      => $item->name,
+                'children'  => $children
             ];
         });
     }
