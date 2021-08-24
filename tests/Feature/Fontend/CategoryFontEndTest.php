@@ -6,8 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use VCComponent\Laravel\Category\Entities\Category;
 use VCComponent\Laravel\Category\Test\TestCase;
 
-
-
 class CategoryFontEndTest extends TestCase
 {
     use RefreshDatabase;
@@ -29,7 +27,6 @@ class CategoryFontEndTest extends TestCase
         array_multisort($listIds, SORT_DESC, $category);
 
         $response = $this->call('GET', 'api/category-management/categories');
-
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [],
@@ -82,7 +79,7 @@ class CategoryFontEndTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
-                'name'       => $category->name,
+                'name' => $category->name,
                 'description' => $category->description,
             ],
         ]);
@@ -139,7 +136,7 @@ class CategoryFontEndTest extends TestCase
 
         $this->assertDatabaseHas('categories', $category);
 
-        $data     = ['status' => 2];
+        $data = ['status' => 2];
         $response = $this->json('PUT', 'api/category-management/categories/status/' . $category['id'], $data);
 
         $response->assertStatus(200);
@@ -166,7 +163,7 @@ class CategoryFontEndTest extends TestCase
 
         $listIds = array_column($categories, 'id');
 
-        $data    = ['item_ids' => $listIds, 'status' => 2];
+        $data = ['item_ids' => $listIds, 'status' => 2];
 
         $response = $this->json('GET', 'api/category-management/categories/all');
         $response->assertJsonFragment(['status' => '1']);
@@ -189,14 +186,14 @@ class CategoryFontEndTest extends TestCase
         unset($category['updated_at']);
         unset($category['created_at']);
 
-        $id          = $category->id;
+        $id = $category->id;
         $category->name = '';
-        $data        = $category->toArray();
+        $data = $category->toArray();
         $response = $this->json('PUT', 'api/category-management/categories/' . $id, $data);
         $this->assertValidation($response, 'name', "The name field is required.");
 
         $category->name = "update name";
-        $data        = $category->toArray();
+        $data = $category->toArray();
 
         $response = $this->json('PUT', 'api/category-management/categories/' . $id, $data);
         $response->assertStatus(200);
