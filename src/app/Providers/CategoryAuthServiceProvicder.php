@@ -25,7 +25,7 @@ class CategoryAuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         
-        Gate::define('show-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToShow');
+        Gate::define('view-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToShow');
         Gate::define('create-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToCreate');
         Gate::define('update-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToUpdate');
         Gate::define('delete-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToDelete');

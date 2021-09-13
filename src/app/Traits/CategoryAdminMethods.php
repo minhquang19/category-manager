@@ -101,7 +101,7 @@ trait CategoryAdminMethods
 
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('show-category', $category)) {
+            if (Gate::forUser($user)->denies('view-category', $category)) {
                 throw new PermissionDeniedException();
             }
         }

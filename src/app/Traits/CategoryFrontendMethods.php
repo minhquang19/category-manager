@@ -83,7 +83,7 @@ trait CategoryFrontendMethods
 
         if (config('category.auth_middleware')['frontend']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('show-category', $category)) {
+            if (Gate::forUser($user)->denies('view-category', $category)) {
                 throw new PermissionDeniedException();
             }
         }
