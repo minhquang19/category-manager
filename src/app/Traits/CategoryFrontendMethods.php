@@ -83,7 +83,7 @@ trait CategoryFrontendMethods
 
         if (config('category.auth_middleware')['frontend']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToShow($user, $id)) {
+            if (Gate::forUser($user)->denies('show-category', $category)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -101,7 +101,7 @@ trait CategoryFrontendMethods
     {
         if (config('category.auth_middleware')['frontend']['middleware'] !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToCreate($user)) {
+            if (Gate::forUser($user)->denies('create-category')) {
                 throw new PermissionDeniedException();
             }
         }
@@ -127,7 +127,7 @@ trait CategoryFrontendMethods
 
         if (config('category.auth_middleware')['frontend']['middleware'] !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdateItem($user, $id)) {
+            if (Gate::forUser($user)->denies('update-category')) {
                 throw new PermissionDeniedException();
             }
         }
@@ -157,7 +157,7 @@ trait CategoryFrontendMethods
 
         if (config('category.auth_middleware')['frontend']['middleware'] !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToDelete($user, $id)) {
+            if (Gate::forUser($user)->denies('delete-create')) {
                 throw new PermissionDeniedException();
             }
         }
@@ -173,7 +173,7 @@ trait CategoryFrontendMethods
     {
         if (config('category.auth_middleware')['frontend']['middleware'] !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdate($user)) {
+            if (Gate::forUser($user)->denies('update-category')) {
                 throw new PermissionDeniedException();
             }
         }
@@ -206,7 +206,7 @@ trait CategoryFrontendMethods
 
         if (config('category.auth_middleware')['frontend']['middleware'] !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdateItem($user, $id)) {
+            if (Gate::forUser($user)->denies('update-category')) {
                 throw new PermissionDeniedException();
             }
         }
