@@ -4,6 +4,8 @@ namespace VCComponent\Laravel\Category\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface;
+use VCComponent\Laravel\Category\Entities\Category;
 
 class CategoryAuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class CategoryAuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        //
+        Category::class => CategoryPolicyInterface::class,
     ];
 
     /**
@@ -24,11 +26,6 @@ class CategoryAuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        
-        Gate::define('view-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToShow');
-        Gate::define('create-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToCreate');
-        Gate::define('update-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToUpdate');
-        Gate::define('delete-category', 'VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface@ableToDelete');
         //
     }
 }

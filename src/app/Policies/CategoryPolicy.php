@@ -6,23 +6,30 @@ use VCComponent\Laravel\Category\Contracts\CategoryPolicyInterface;
 
 class CategoryPolicy implements CategoryPolicyInterface
 {
-    public function ableToShow($user, $model)
+    public function before($user, $ability)
     {
-        return true;
+        if ($user->isAdministrator()) {
+            return true;
+        }
     }
 
-    public function ableToCreate($user)
+    public function view($user, $model)
     {
-        return true;
+        return $user->hasPermission('view-category');
     }
 
-    public function ableToUpdate($user)
+    public function create($user)
     {
-        return true;
+        return $user->hasPermission('create-category');
     }
 
-    public function ableToDelete($user, $model)
+    public function update($user)
     {
-        return true;
+        return $user->hasPermission('update-category');
+    }
+
+    public function delete($user, $model)
+    {
+        return $user->hasPermission('delete-category');
     }
 }
