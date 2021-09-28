@@ -4,7 +4,9 @@ namespace VCComponent\Laravel\Category\Traits;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use VCComponent\Laravel\Category\Entities\Category;
 use VCComponent\Laravel\Category\Events\CategoryCreatedByAdminEvent;
 use VCComponent\Laravel\Category\Events\CategoryDeletedEvent;
 use VCComponent\Laravel\Category\Events\CategoryUpdatedByAdminEvent;
@@ -102,7 +104,7 @@ trait CategoryAdminMethods
 
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToShow($user, $id)) {
+            if (Gate::forUser($user)->denies('view', $category)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -120,7 +122,7 @@ trait CategoryAdminMethods
     {
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToCreate($user)) {
+            if (Gate::forUser($user)->denies('create', Category::class)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -149,7 +151,7 @@ trait CategoryAdminMethods
 
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdateItem($user, $id)) {
+            if (Gate::forUser($user)->denies('update', Category::class)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -186,7 +188,7 @@ trait CategoryAdminMethods
 
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToDelete($user, $id)) {
+            if (Gate::forUser($user)->denies('detele', $category)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -211,7 +213,7 @@ trait CategoryAdminMethods
     {
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdate($user)) {
+            if (Gate::forUser($user)->denies('update', Category::class)) {
                 throw new PermissionDeniedException();
             }
         }
@@ -239,7 +241,7 @@ trait CategoryAdminMethods
     {
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUpdateItem($user, $id)) {
+            if (Gate::forUser($user)->denies('update', Category::class)) {
                 throw new PermissionDeniedException();
             }
         }
