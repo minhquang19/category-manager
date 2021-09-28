@@ -28,7 +28,9 @@ trait CategoryAdminMethods
                 ['except' => config('category.auth_middleware.admin.except')]
             );
         }
-
+        else {
+            throw new Exception("Admin middleware configuration is required");
+        }
         if (isset(config('category.transformers')['category'])) {
             $this->transformer = config('category.transformers.category');
         } else {
@@ -278,10 +280,10 @@ trait CategoryAdminMethods
 
         return $query;
     }
-    
+
     public function getTree(Request $request) {
         $query = $this->entity;
-        
+
         if ($request->has('type')) {
             $query = $query->where('type', $request->get('type'));
         }
