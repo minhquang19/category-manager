@@ -188,7 +188,7 @@ trait CategoryAdminMethods
 
         if (config('category.auth_middleware')['admin']['middleware']) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('detele', $category)) {
+            if (Gate::forUser($user)->denies('delete', $category)) {
                 throw new PermissionDeniedException();
             }
         }
