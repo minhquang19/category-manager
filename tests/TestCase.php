@@ -2,13 +2,14 @@
 
 namespace VCComponent\Laravel\Category\Test;
 
-
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Cviebrock\EloquentSluggable\ServiceProvider;
+use Dingo\Api\Provider\LaravelServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use VCComponent\Laravel\Category\Providers\CategoryRouteProvider;
 use VCComponent\Laravel\Category\Providers\CategoryServiceProvider;
-use Dingo\Api\Provider\LaravelServiceProvider;
-
+use VCComponent\Laravel\User\Providers\UserComponentEventProvider;
+use VCComponent\Laravel\User\Providers\UserComponentProvider;
+use VCComponent\Laravel\User\Providers\UserComponentRouteProvider;
 
 class TestCase extends OrchestraTestCase
 {
@@ -26,6 +27,11 @@ class TestCase extends OrchestraTestCase
             CategoryRouteProvider::class,
             CategoryServiceProvider::class,
             ServiceProvider::class,
+            \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+            \Illuminate\Auth\AuthServiceProvider::class,
+            UserComponentEventProvider::class,
+            UserComponentProvider::class,
+            UserComponentRouteProvider::class,
 
         ];
     }
@@ -51,10 +57,15 @@ class TestCase extends OrchestraTestCase
         $app['config']->set('app.key', 'base64:TEQ1o2POo+3dUuWXamjwGSBx/fsso+viCCg9iFaXNUA=');
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
+        $app['config']->set('jwt.secret', '5jMwJkcDTUKlzcxEpdBRIbNIeJt1q5kmKWxa0QA2vlUEG6DRlxcgD7uErg51kbBl');
+        $app['config']->set('auth.providers.users.model', \VCComponent\Laravel\User\Entities\User::class);
+        $app['config']->set('user', ['namespace' => 'user-management']);
+        $app['config']->set('repository.cache.enabled', false);
+
         $app['config']->set('category.namespace', 'category-management');
         $app['config']->set('category.models', [
             'category' => \VCComponent\Laravel\Category\Test\Stubs\Models\Category::class,
@@ -64,46 +75,48 @@ class TestCase extends OrchestraTestCase
             'category' => \VCComponent\Laravel\Category\Transformers\CategoryTransformer::class,
         ]);
         $app['config']->set('category.auth_middleware', [
-            'admin'    => [
-                'middleware' => ''
+            'admin' => [
+                'middleware' => 'auth',
+                'except' => [],
             ],
             'frontend' => [
-                'middleware' => ''
+                'middleware' => '',
             ],
         ]);
+
         $app['config']->set('api', [
-            'standardsTree'      => 'x',
-            'subtype'            => '',
-            'version'            => 'v1',
-            'prefix'             => 'api',
-            'domain'             => null,
-            'name'               => null,
+            'standardsTree' => 'x',
+            'subtype' => '',
+            'version' => 'v1',
+            'prefix' => 'api',
+            'domain' => null,
+            'name' => null,
             'conditionalRequest' => true,
-            'strict'             => false,
-            'debug'              => true,
-            'errorFormat'        => [
-                'message'     => ':message',
-                'errors'      => ':errors',
-                'code'        => ':code',
+            'strict' => false,
+            'debug' => true,
+            'errorFormat' => [
+                'message' => ':message',
+                'errors' => ':errors',
+                'code' => ':code',
                 'status_code' => ':status_code',
-                'debug'       => ':debug',
+                'debug' => ':debug',
             ],
-            'middleware'         => [
+            'middleware' => [
             ],
-            'auth'               => [
+            'auth' => [
             ],
-            'throttling'         => [
+            'throttling' => [
             ],
-            'transformer'        => \Dingo\Api\Transformer\Adapter\Fractal::class,
-            'defaultFormat'      => 'json',
-            'formats'            => [
+            'transformer' => \Dingo\Api\Transformer\Adapter\Fractal::class,
+            'defaultFormat' => 'json',
+            'formats' => [
                 'json' => \Dingo\Api\Http\Response\Format\Json::class,
             ],
-            'formatsOptions'     => [
+            'formatsOptions' => [
                 'json' => [
                     'pretty_print' => false,
                     'indent_style' => 'space',
-                    'indent_size'  => 2,
+                    'indent_size' => 2,
                 ],
             ],
         ]);
@@ -114,7 +127,7 @@ class TestCase extends OrchestraTestCase
         $response->assertStatus(422);
         $response->assertJson([
             'message' => 'The given data was invalid.',
-            "errors"  => [
+            "errors" => [
                 $field => [
                     $error_message,
                 ],
