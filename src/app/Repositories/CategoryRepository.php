@@ -16,4 +16,12 @@ interface CategoryRepository extends RepositoryInterface
     public function getCategoriesQueryPaginate(array $where, $number = 10, $order_by ='order', $order = 'asc', $columns = ['*']);
     public function getPostCategoriesQuery($post_id, array $where, $post_type = 'posts', $number = 10, $order_by = 'order', $order = 'asc');
     public function getPostCategoriesQueryPaginate($post_id, array $where, $post_type = 'posts', $number = 10, $order_by = 'order', $order = 'asc');
+    public function getAllCategoriesByType( $type);
+    public function getCategoryBySlug( $slug);
+    public function findCategoriesByWhere(array $where, $type, $number = 10, $order_by = 'order', $order = 'asc');
+    public function findCategoriesByField($field, $value, $type);
+    public function getCategoryByID($cate_id);
+    public function getCategoriesUrl($cate_id);
+    public function getAllCategoriesWithout($type,array $where);
+
 }

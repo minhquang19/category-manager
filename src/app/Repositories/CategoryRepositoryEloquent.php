@@ -2,6 +2,7 @@
 
 namespace VCComponent\Laravel\Category\Repositories;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\App;
@@ -10,7 +11,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use VCComponent\Laravel\Category\Entities\Category;
 use VCComponent\Laravel\Category\Repositories\CategoryRepository;
 use Illuminate\Support\Facades\DB;
-
+use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 
 /**
  * Class CategoryRepositoryEloquent.
@@ -101,5 +102,65 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
             ->paginate($number);
         return $query;
     }
+
+    public function getAllCategoriesByType($type)
+    {
+        try {
+            return $this->model->where('status', 1)->ofType($type)->get();
+        } catch (Exception $e) {
+            throw new NotFoundException($e);
+        }
+    }
+
+    public function getCategoryBySlug($slug)
+    {
+        try {
+            return $this->model->where(['status' => '1', 'slug' => $slug])->first();
+        } catch (Exception $e) {
+            throw new NotFoundException($e);
+        }
+    }
+
+    public function findCategoriesByWhere(array $where, $type, $number = 10, $order_by = 'order', $order = 'asc')
+    {
+        try {
+            $query = $this->model->ofType($type)
+                ->where('status', 1)
+                ->where($where)
+                ->orderBy($order_by, $order);
+            if ($number > 0) {
+                return $query->limit($number)->get();
+            }
+            return $query->get();
+        } catch (Exception $e) {
+            throw new NotFoundException($e);
+        }
+    }
+
+    public function findCategoriesByField($field, $value = null, $type)
+    {
+        try {
+            return $this->model->ofType($type)->where([$field => $value, 'status' => 1])->get();
+        } catch (Exception $e) {
+            throw new NotFoundException('categories not found');
+        }
+    }
+
+    public function getCategoryByID($cate_id)
+    {
+        return $this->model->where(['id' => $cate_id, 'status' => 1])->first();
+    }
+
+    public function getCategoriesUrl($cate_id)
+    {
+        $cate = $this->model->where('id', $cate_id)->first();
+        return '/' . $cate->type . '/' . $cate->slug;
+    }
+
+    public function getAllCategoriesWithout($type, array $where)
+    {
+        return $this->model->where('status', 1)->ofType($type)->whereNotIn('slug', $where)->orderBy('order', 'asc');
+    }
+
 
 }
