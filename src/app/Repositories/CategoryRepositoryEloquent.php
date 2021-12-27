@@ -103,11 +103,14 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         return $query;
     }
 
-    public function getAllCategoriesByType($type,$number = 10,$order_by = 'order', $order = 'asc')
+    public function getListCategories($type = null, $number = null)
     {
         try {
-            $query = $this->model->where('status', 1)->ofType($type)->orderBy($order_by,$order);
-            if ($number > 0) {
+            $query = $this->model->where('status', 1);
+            if (!is_null($type)) {
+                $query = $query->ofType($type);
+            }
+            if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
             return $query->get();
@@ -117,24 +120,25 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getAllCategoriesWithPagination($type,$page,$order_by = 'order', $order = 'asc')
+    public function getListPaginatedCategories($type = null, $per_page)
     {
         try {
-            $query = $this->model->where('status', 1)->ofType($type)->orderBy($order_by,$order);
-            return $query->paginate($page);
+            $query = $this->model->where('status', 1);
+            if (!is_null($type)) {
+                $query = $query->ofType($type);
+            }
+            return $query->paginate($per_page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
 
-    public function findCategoriesByWhere(array $where, $type, $number = 10, $order_by = 'order', $order = 'asc')
+    public function getRelatedCategories($cate_id,$number= null)
     {
         try {
-            $query = $this->model->ofType($type)
-                ->where('status', 1)
-                ->where($where)
-                ->orderBy($order_by, $order);
-            if ($number > 0) {
+            $cate_type = $this->getCategoriesQuery(['id' => $cate_id])->first()->type;
+            $query = $this->model->where('id', '<>', $cate_id)->where(['status' => 1, 'type' => $cate_type]);
+            if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
             return $query->get();
@@ -142,25 +146,46 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
             throw new NotFoundException($e);
         }
     }
-
-    public function findCategoriesByWherePaginate(array $where, $type, $page, $order_by = 'order', $order = 'asc')
+    public function getPaginatedRelatedCategories($cate_id, $per_page)
     {
         try {
-            $query = $this->model->ofType($type)
-                ->where('status', 1)
-                ->where($where)
-                ->orderBy($order_by, $order);
-            return $query->paginate($page);
+            $cate_type = $this->getCategoriesQuery(['id' => $cate_id])->first()->type;
+            $query = $this->model->where('id', '<>', $cate_id)->where(['status' => 1, 'type' => $cate_type]);
+            return $query->paginate($per_page);
+        } catch (Exception $e) {
+            throw new NotFoundException($e);
+        }
+    }
+    public function getListChildCategories($parent_id,$number = null)
+    {
+        try {
+            $query = $this->getCategoriesQuery(['parent_id' => $parent_id]);
+            if (!is_null($number)) {
+                return $query->limit($number)->get();
+            }
+            return $query->get();
+        } catch (Exception $e) {
+            throw new NotFoundException($e);
+        }
+    }
+    public function getListHotCategories($type,$number = null)
+    {
+        try {
+            $query = $this->model->ofType($type)->where(['status'=>1,'is_hot'=>1]);
+            if (!is_null($number)) {
+                return $query->limit($number)->get();
+            }
+            return $query->get();
+
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
 
-
-    public function getCategoriesUrl($cate_id)
+    public function getPaginatedListHotCategories($type,$per_page)
     {
-        $cate = $this->model->where('id', $cate_id)->first();
-        return '/' . $cate->type . '/' . $cate->slug;
+        $query = $this->model->ofType($type)->where(['status'=>1,'is_hot'=>1]);
+        return $query->paginate($per_page);
     }
 
 
