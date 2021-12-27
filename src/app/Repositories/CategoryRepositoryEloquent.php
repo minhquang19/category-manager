@@ -103,19 +103,25 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         return $query;
     }
 
-    public function getAllCategoriesByType($type)
+    public function getAllCategoriesByType($type,$number = 10,$order_by = 'order', $order = 'asc')
     {
         try {
-            return $this->model->where('status', 1)->ofType($type)->get();
+            $query = $this->model->where('status', 1)->ofType($type)->orderBy($order_by,$order);
+            if ($number > 0) {
+                return $query->limit($number)->get();
+            }
+            return $query->get();
+
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
 
-    public function getCategoryBySlug($slug)
+    public function getAllCategoriesWithPagination($type,$page,$order_by = 'order', $order = 'asc')
     {
         try {
-            return $this->model->where(['status' => '1', 'slug' => $slug])->first();
+            $query = $this->model->where('status', 1)->ofType($type)->orderBy($order_by,$order);
+            return $query->paginate($page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
@@ -137,19 +143,19 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function findCategoriesByField($field, $value = null, $type)
+    public function findCategoriesByWherePaginate(array $where, $type, $page, $order_by = 'order', $order = 'asc')
     {
         try {
-            return $this->model->ofType($type)->where([$field => $value, 'status' => 1])->get();
+            $query = $this->model->ofType($type)
+                ->where('status', 1)
+                ->where($where)
+                ->orderBy($order_by, $order);
+            return $query->paginate($page);
         } catch (Exception $e) {
-            throw new NotFoundException('categories not found');
+            throw new NotFoundException($e);
         }
     }
 
-    public function getCategoryByID($cate_id)
-    {
-        return $this->model->where(['id' => $cate_id, 'status' => 1])->first();
-    }
 
     public function getCategoriesUrl($cate_id)
     {
@@ -157,10 +163,6 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         return '/' . $cate->type . '/' . $cate->slug;
     }
 
-    public function getAllCategoriesWithout($type, array $where)
-    {
-        return $this->model->where('status', 1)->ofType($type)->whereNotIn('slug', $where)->orderBy('order', 'asc');
-    }
 
 
 }
