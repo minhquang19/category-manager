@@ -118,10 +118,4 @@ class CategoryQueryTraitTest extends CategoryQueryTraitTestCase
         $this->assertSame($cate_a->name, $repository->getListHotCategories(['type'=>'cate'])[0]->name);
     }
 
-
-
-
-
-
-
 }

@@ -107,10 +107,10 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         return $query;
     }
 
-    public function getListCategories($type = null, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListCategories($type = null, $number = null)
     {
         try {
-            $query = $this->model->where('status', 1)->orderBy($order_by, $order);
+            $query = $this->model->where('status', 1)->orderBy('order', 'asc');
             if (!is_null($type)) {
                 $query = $query->ofType($type);
             }
@@ -124,10 +124,10 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getListPaginatedCategories($type = null, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListPaginatedCategories($type = null, $per_page)
     {
         try {
-            $query = $this->model->where('status', 1)->orderBy($order_by, $order);
+            $query = $this->model->where('status', 1)->orderBy('order', 'asc');;
             if (!is_null($type)) {
                 $query = $query->ofType($type);
             }
@@ -137,13 +137,13 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getListRelatedCategories(Category $category, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListRelatedCategories(Category $category, $number = null)
     {
         try {
-            $cate_type = $this->getCategoriesQuery(['id' => $category->id])->first()->type;
+
             $query = $this->model->where('id', '<>', $category->id)
-                ->where(['status' => 1, 'type' => $cate_type])
-                ->orderBy($order_by, $order);
+                ->where(['status' => 1, 'type' => $category->type])
+                ->orderBy('order', 'asc');
             if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
@@ -152,24 +152,23 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
             throw new NotFoundException($e);
         }
     }
-    public function getListPaginatedRelatedCategories(Category $category, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListPaginatedRelatedCategories(Category $category, $per_page)
     {
         try {
-            $cate_type = $this->getCategoriesQuery(['id' => $category->id])->first()->type;
             $query = $this->model->where('id', '<>', $category->id)
-                ->where(['status' => 1, 'type' => $cate_type])
-                ->orderBy($order_by, $order);
+                ->where(['status' => 1, 'type' => $category->type])
+                ->orderBy('order', 'asc');
             return $query->paginate($per_page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
-    public function getListChildCategories(Category $category, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListChildCategories(Category $category, $number = null)
     {
         try {
             $query = $this->model->ofType($category->type)
             ->where(['parent_id' => $category->id])
-            ->orderBy($order_by, $order);
+            ->orderBy('order', 'asc');
         if (!is_null($number)) {
             return $query->limit($number)->get();
         }
@@ -178,23 +177,23 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
             throw new NotFoundException($e);
         }
     }
-    public function getListPaginatedChildCategories(Category $category, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListPaginatedChildCategories(Category $category, $per_page)
     {
         try {
             $query = $this->model->ofType($category->type)
             ->where(['parent_id' => $category->id])
-            ->orderBy($order_by, $order);
+            ->orderBy('order', 'asc');
             return $query->paginate($per_page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
-    public function getListHotCategories($type, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListHotCategories($type, $number = null)
     {
         try {
             $query = $this->model->ofType($type)
                 ->where(['status' => 1, 'is_hot' => 1])
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
@@ -205,12 +204,12 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getListPaginatedHotCategories($type, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListPaginatedHotCategories($type, $per_page)
     {
         try {
             $query = $this->model->ofType($type)
                 ->where(['status' => 1, 'is_hot' => 1])
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             return $query->paginate($per_page);
 
         } catch (Exception $e) {
@@ -219,10 +218,12 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
 
     }
 
-    public function getListTraslatebleCategories($type = null, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListTraslatebleCategories($type = null, $number = null)
     {
         try {
-            $query = $this->model->where('status', 1)->orderBy($order_by, $order)->width('languages');
+            $query = $this->model->where('status', 1)
+            ->width('languages')
+            ->orderBy('order', 'asc');
             if (!is_null($type)) {
                 $query = $query->ofType($type);
             }
@@ -236,12 +237,12 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getListTraslateblePaginatedCategories($type = null, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListTraslateblePaginatedCategories($type = null, $per_page)
     {
         try {
             $query = $this->model->where('status', 1)
                 ->width('languages')
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             if (!is_null($type)) {
                 $query = $query->ofType($type);
             }
@@ -251,14 +252,14 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getListTraslatebleRelatedCategories(Category $category, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListTraslatebleRelatedCategories(Category $category, $number = null)
     {
         try {
             $cate_type = $this->getCategoriesQuery(['id' => $category->id])->first()->type;
             $query = $this->model->where('id', '<>', $category->id)
                 ->where(['status' => 1, 'type' => $cate_type])
                 ->width('languages')
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
@@ -267,25 +268,25 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
             throw new NotFoundException($e);
         }
     }
-    public function getListTraslateblePaginatedRelatedCategories(Category $category, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListTraslateblePaginatedRelatedCategories(Category $category, $per_page)
     {
         try {
             $cate_type = $this->getCategoriesQuery(['id' => $category->id])->first()->type;
             $query = $this->model->where('id', '<>', $category->id)
                 ->where(['status' => 1, 'type' => $cate_type])
                 ->width('languages')
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             return $query->paginate($per_page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
-    public function getListTraslatebleChildCategories(Category $category, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListTraslatebleChildCategories(Category $category, $number = null)
     {
         try {
             $query = $this->getCategoriesQuery(['parent_id' => $category->id])
                 ->width('languages')
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
@@ -294,24 +295,24 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
             throw new NotFoundException($e);
         }
     }
-    public function getListTraslateblePaginatedChildCategories(Category $category, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListTraslateblePaginatedChildCategories(Category $category, $per_page)
     {
         try {
             $query = $this->getCategoriesQuery(['parent_id' => $category->id])
                 ->width('languages')
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             return $query->paginate($per_page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
-    public function getListTraslatebleHotCategories($type, $number = null, $order_by = 'order', $order = 'asc')
+    public function getListTraslatebleHotCategories($type, $number = null)
     {
         try {
             $query = $this->model->ofType($type)
                 ->where(['status' => 1, 'is_hot' => 1])
                 ->width('languages')
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
@@ -322,12 +323,12 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getListTraslateblePaginatedHotCategories($type, $per_page, $order_by = 'order', $order = 'asc')
+    public function getListTraslateblePaginatedHotCategories($type, $per_page)
     {
         try {
             $query = $this->model->ofType($type)->where(['status' => 1, 'is_hot' => 1])
                 ->width('languages')
-                ->orderBy($order_by, $order);
+                ->orderBy('order', 'asc');
             return $query->paginate($per_page);
 
         } catch (Exception $e) {
