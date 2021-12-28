@@ -133,11 +133,11 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getRelatedCategories($cate_id,$number= null)
+    public function getListRelatedCategories(Category $category,$number= null)
     {
         try {
-            $cate_type = $this->getCategoriesQuery(['id' => $cate_id])->first()->type;
-            $query = $this->model->where('id', '<>', $cate_id)->where(['status' => 1, 'type' => $cate_type]);
+            $cate_type = $this->getCategoriesQuery(['id' => $category->id])->first()->type;
+            $query = $this->model->where('id', '<>', $category->id)->where(['status' => 1, 'type' => $cate_type]);
             if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
@@ -146,24 +146,33 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
             throw new NotFoundException($e);
         }
     }
-    public function getPaginatedRelatedCategories($cate_id, $per_page)
+    public function getListPaginatedRelatedCategories(Category $category, $per_page)
     {
         try {
-            $cate_type = $this->getCategoriesQuery(['id' => $cate_id])->first()->type;
-            $query = $this->model->where('id', '<>', $cate_id)->where(['status' => 1, 'type' => $cate_type]);
+            $cate_type = $this->getCategoriesQuery(['id' => $category->id])->first()->type;
+            $query = $this->model->where('id', '<>', $category->id)->where(['status' => 1, 'type' => $cate_type]);
             return $query->paginate($per_page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
     }
-    public function getListChildCategories($parent_id,$number = null)
+    public function getListChildCategories(Category $category,$number = null)
     {
         try {
-            $query = $this->getCategoriesQuery(['parent_id' => $parent_id]);
+            $query = $this->getCategoriesQuery(['parent_id' => $category->id]);
             if (!is_null($number)) {
                 return $query->limit($number)->get();
             }
             return $query->get();
+        } catch (Exception $e) {
+            throw new NotFoundException($e);
+        }
+    }
+    public function getListPaginatedChildCategories(Category $category,$per_page)
+    {
+        try {
+            $query = $this->getCategoriesQuery(['parent_id' => $category->id]);
+            return $query->paginate($per_page);
         } catch (Exception $e) {
             throw new NotFoundException($e);
         }
@@ -182,11 +191,18 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         }
     }
 
-    public function getPaginatedListHotCategories($type,$per_page)
+    public function getListPaginatedHotCategories($type,$per_page)
     {
-        $query = $this->model->ofType($type)->where(['status'=>1,'is_hot'=>1]);
-        return $query->paginate($per_page);
+        try {
+            $query = $this->model->ofType($type)->where(['status'=>1,'is_hot'=>1]);
+            return $query->paginate($per_page);
+
+        } catch (Exception $e) {
+            throw new NotFoundException($e);
+        }
+
     }
+
 
 
 

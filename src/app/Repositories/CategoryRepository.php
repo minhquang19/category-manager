@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Category\Repositories;
 
 use Prettus\Repository\Contracts\RepositoryInterface;
+use VCComponent\Laravel\Category\Entities\Category;
 
 /**
  * Interface CategoryRepository.
@@ -18,10 +19,11 @@ interface CategoryRepository extends RepositoryInterface
     public function getPostCategoriesQueryPaginate($post_id, array $where, $post_type = 'posts', $number = 10, $order_by = 'order', $order = 'asc');
     public function getListCategories($type = null,$number = null);
     public function getListPaginatedCategories($type = null,$per_page);
-    public function getRelatedCategories($cate_id,$number = null);
-    public function getPaginatedRelatedCategories($cate_id,$per_page);
-    public function getListChildCategories($parent_id,$number = null);
+    public function getListRelatedCategories(Category $category,$number = null);
+    public function getListPaginatedRelatedCategories(Category $category,$per_page);
+    public function getListChildCategories(Category $category,$number = null);
+    public function getListPaginatedChildCategories(Category $category,$per_page);
     public function getListHotCategories($type,$number = null);
-    public function getPaginatedListHotCategories($type,$per_page);
+    public function getListPaginatedHotCategories($type,$per_page);
 
 }
