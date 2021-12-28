@@ -7,9 +7,9 @@ use Dingo\Api\Provider\LaravelServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use VCComponent\Laravel\Category\Providers\CategoryRouteProvider;
 use VCComponent\Laravel\Category\Providers\CategoryServiceProvider;
-use VCComponent\Laravel\User\Providers\UserComponentEventProvider;
-use VCComponent\Laravel\User\Providers\UserComponentProvider;
-use VCComponent\Laravel\User\Providers\UserComponentRouteProvider;
+// use VCComponent\Laravel\User\Providers\UserComponentEventProvider;
+// use VCComponent\Laravel\User\Providers\UserComponentProvider;
+// use VCComponent\Laravel\User\Providers\UserComponentRouteProvider;
 
 class TestCase extends OrchestraTestCase
 {
@@ -29,9 +29,9 @@ class TestCase extends OrchestraTestCase
             ServiceProvider::class,
             \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
             \Illuminate\Auth\AuthServiceProvider::class,
-            UserComponentEventProvider::class,
-            UserComponentProvider::class,
-            UserComponentRouteProvider::class,
+            // UserComponentEventProvider::class,
+            // UserComponentProvider::class,
+            // UserComponentRouteProvider::class,
 
         ];
     }
