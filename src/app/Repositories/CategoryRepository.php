@@ -27,14 +27,14 @@ interface CategoryRepository extends RepositoryInterface
     public function getListHotCategories($type,$number = null);
     public function getListPaginatedHotCategories($type,$per_page);
 
-    public function getListTraslatebleCategories($type = null,$number = null);
-    public function getListTraslateblePaginatedCategories($type = null,$per_page);
-    public function getListTraslatebleRelatedCategories(Category $category,$number = null);
-    public function getListTraslateblePaginatedRelatedCategories(Category $category,$per_page);
-    public function getListTraslatebleChildCategories(Category $category,$number = null);
-    public function getListTraslateblePaginatedChildCategories(Category $category,$per_page);
-    public function getListTraslatebleHotCategories($type,$number = null);
-    public function getListTraslateblePaginatedHotCategories($type,$per_page);
+    public function getListTranslatableCategories($type = null,$number = null);
+    public function getListPaginatedTranslatableCategories($type = null,$per_page);
+    public function getListRelatedTranslatableCategories(Category $category,$number = null);
+    public function getListPaginatedRelatedTranslatableCategories(Category $category,$per_page);
+    public function getListChildTranslatableCategories(Category $category,$number = null);
+    public function getListPaginatedChildTranslatableCategories(Category $category,$per_page);
+    public function getListHotTranslatableCategories($type,$number = null);
+    public function getListPaginatedHotTranslatableCategories($type,$per_page);
 
 
 }
